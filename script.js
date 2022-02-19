@@ -5,6 +5,8 @@ window.addEventListener('load', function () {
     canvas.height = 720;
     let enemies = [];
 
+// dhglajhfg
+
     class InputHandler {
         constructor() {
             this.keys = [];
