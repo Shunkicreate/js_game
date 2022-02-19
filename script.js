@@ -3,6 +3,7 @@ window.addEventListener('load', function () {
     const ctx = canvas.getContext('2d');
     canvas.width = 800;
     canvas.height = 720;
+    let enemies = [];
 
     class InputHandler {
         constructor() {
@@ -91,14 +92,56 @@ window.addEventListener('load', function () {
     }
 
     class Background {
+        constructor(gameWidth, gameHeight){
+            this.gameWidth = gameWidth;
+            this.gameHeight = gameHeight;
+            this.image = document.getElementById('backgroundImage');
+            this.width = 2400;
+            this.height = 720;
+            this.x = 0;
+            this.y = 0;
+            this.speed = 7;
+        }
+
+        draw(context){
+            context.drawImage(this.image, this.x, this.y, this.width, this.height);
+            context.drawImage(this.image, this.x + this.width - this.speed, this.y, this.width, this.height);
+        }
+
+        update(){
+            this.x -= this.speed;
+            if(this.x < 0 - this.width) this.x = 0;
+        }
 
     }
 
     class Enemy {
+        constructor(gameWidth, gameHeight){
+            this.gameWidth = gameWidth;
+            this.gameHeight = gameHeight;
+            this.width = 160;
+            this.height = 119;
+            this.image = document.getElementById('enemyImage');
+            this.x = this.gameWidth;
+            this.y = this.gameHeight - this.height;
+            this.frameX = 0;            
+        }
 
+        draw(context){
+            context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x, this.y, this.width, this.height);
+        }
+
+        update(){
+            this.x--;
+        }
     }
 
     function handleEnemies() {
+        enemies.push(new Enemy(canvas.width, canvas.height));
+        enemies.forEach(enemy =>{
+            enemy.draw(ctx);
+            enemy.update();
+        })
 
     }
 
@@ -108,12 +151,16 @@ window.addEventListener('load', function () {
 
     const input = new InputHandler();
     const player = new Player(canvas.width, canvas.height);
-    
+    const background = new Background(canvas.width, canvas.height);
 
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        background.draw(ctx);
+        background.update();
         player.draw(ctx);
         player.update(input);
+
+
         requestAnimationFrame(animate);
 
     }
